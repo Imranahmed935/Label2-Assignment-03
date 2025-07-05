@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import { bookId } from "../Interfaces/book.interface";
+import { IBook } from "../Interfaces/book.interface";
 
-const bookSchema = new Schema<bookId>(
+const bookSchema = new Schema<IBook>(
   {
     title: { type: String, required: true, trim: true },
     author: { type: String, required: true, trim: true },
@@ -9,16 +9,8 @@ const bookSchema = new Schema<bookId>(
       type: String,
       required: true,
       enum: {
-        values: [
-          "FICTION",
-          "NON_FICTION",
-          "SCIENCE",
-          "HISTORY",
-          "BIOGRAPHY",
-          "FANTASY",
-        ],
-        message:
-          "Genre must be one of: FICTION, NON_FICTION, SCIENCE, HISTORY, BIOGRAPHY, FANTASY",
+        values: ["FICTION", "NON_FICTION", "SCIENCE", "HISTORY", "BIOGRAPHY", "FANTASY"],
+        message: "Genre must be one of: FICTION, NON_FICTION, SCIENCE, HISTORY, BIOGRAPHY, FANTASY",
       },
     },
     isbn: { type: String, required: true, unique: true, trim: true },
@@ -39,4 +31,18 @@ const bookSchema = new Schema<bookId>(
   }
 );
 
-export const Book = model<bookId>("Book", bookSchema);
+// ✅ Instance Method
+bookSchema.methods.handleBorrow = async function (quantity: number): Promise<void> {
+  if (this.copies < quantity) {
+    throw new Error("Not enough copies available");
+  }
+
+  this.copies -= quantity;
+  if (this.copies === 0) {
+    this.available = false;
+  }
+
+  await this.save();
+};
+
+export const Book = model<IBook>("Book", bookSchema);

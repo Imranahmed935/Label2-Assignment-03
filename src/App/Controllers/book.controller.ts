@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
 import { Book } from "../Models/book.model";
-import globalErrorHandler from "../GlobalError/error";
+
 
 export const bookRouter = express.Router();
 
@@ -95,10 +95,17 @@ bookRouter.delete(
     try {
       const id = req.params.id;
       const deletedData = await Book.findByIdAndDelete(id);
+      if (!deletedData) {
+        res.status(404).json({
+          success: false,
+          message: "Book not found",
+          data: null,
+        });
+      }
       res.status(200).json({
         success: true,
         message: "Book deleted successfully",
-        data: deletedData,
+        data: null,
       });
     } catch (error) {
       next(error);
