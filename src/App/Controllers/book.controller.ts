@@ -88,3 +88,20 @@ bookRouter.put(
     }
   }
 );
+
+bookRouter.delete(
+  "/:id",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const id = req.params.id;
+      const deletedData = await Book.findByIdAndDelete(id);
+      res.status(200).json({
+        success: true,
+        message: "Book deleted successfully",
+        data: deletedData,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
