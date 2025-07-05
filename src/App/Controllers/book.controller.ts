@@ -16,7 +16,7 @@ bookRouter.post(
         data,
       });
     } catch (error) {
-      next(globalErrorHandler);
+      next(error);
     }
   }
 );
@@ -48,7 +48,7 @@ bookRouter.get("/", async (req: Request, res: Response, next: NextFunction) => {
       data: books,
     });
   } catch (error) {
-     next(globalErrorHandler);
+    next(error);
   }
 });
 
@@ -60,11 +60,31 @@ bookRouter.get(
       const singleData = await Book.findById(id);
       res.status(200).json({
         success: true,
-        message: "successful",
+        message: "Book retrieved successfully",
         data: singleData,
       });
     } catch (error) {
-       next(globalErrorHandler);
+      next(error);
+    }
+  }
+);
+
+bookRouter.put(
+  "/:id",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const id = req.params.id;
+      const updateData = req.body;
+      const updateBook = await Book.findByIdAndUpdate(id, updateData, {
+        new: true,
+      });
+      res.status(200).json({
+        success: true,
+        message: "Book updated successfully",
+        data: updateBook,
+      });
+    } catch (error) {
+      next(error);
     }
   }
 );
