@@ -1,4 +1,4 @@
-# 📚 Book Management & Borrowing System
+# 📚 Library Management System
 
 **Live API Testable at Localhost**: `http://localhost:5000/api`
 
