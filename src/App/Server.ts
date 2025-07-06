@@ -1,20 +1,23 @@
-import { Server } from "http";
-import { app } from "./App";
 import mongoose from "mongoose";
+import { app } from "./App";
+import dotenv from "dotenv";
+dotenv.config();
+
 const PORT = 5000;
 
-let server: Server;
-
-async function connectedDB() {
+async function connectDB(): Promise<void> {
   try {
-    await mongoose.connect('mongodb+srv://mongoTodo:mongodb@cluster0.haqk7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0');
-    console.log('mongodb connected!')
-    server = app.listen(PORT, () => {
-      console.log(`Library Management App server is Running on port ${PORT}`);
+    await mongoose.connect(process.env.MONGODB_URI as string);
+
+    console.log("✅ MongoDB connected!");
+
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running at port:${PORT}`);
     });
   } catch (error) {
-    console.log('Database connection failed', error);
+    console.error("❌ Database connection failed:", error);
+    process.exit(1); // optional: force exit on failure
   }
 }
 
-connectedDB();
+connectDB();

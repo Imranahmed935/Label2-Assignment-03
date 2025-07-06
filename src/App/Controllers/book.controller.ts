@@ -21,7 +21,7 @@ bookRouter.post(
   }
 );
 
-bookRouter.get("/", async (req: Request, res: Response, next: NextFunction) => {
+bookRouter.get("/", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const {
       filter,
@@ -30,17 +30,17 @@ bookRouter.get("/", async (req: Request, res: Response, next: NextFunction) => {
       limit = "5",
     } = req.query;
 
-    const query: any = {};
-    if (filter) {
-      query.genre = (filter as string).toUpperCase();
+    const query: Record<string, unknown> = {};
+    if (typeof filter === "string") {
+      query.genre = filter.toUpperCase();
     }
 
-    const sortOption: any = {};
+    const sortOption: Record<string, 1 | -1> = {};
     sortOption[sortBy as string] = sort === "asc" ? 1 : -1;
 
     const books = await Book.find(query)
       .sort(sortOption)
-      .limit(parseInt(limit as string));
+      .limit(parseInt(limit as string, 10));
 
     res.status(200).json({
       success: true,
@@ -51,6 +51,7 @@ bookRouter.get("/", async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 });
+
 
 bookRouter.get(
   "/:id",
