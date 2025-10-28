@@ -21,6 +21,7 @@ bookRouter.post(
   }
 );
 
+
 bookRouter.get("/", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const {
@@ -28,30 +29,53 @@ bookRouter.get("/", async (req: Request, res: Response, next: NextFunction): Pro
       sortBy = "createdAt",
       sort = "desc",
       limit = "5",
+      page = "1",
     } = req.query;
 
+    
     const query: Record<string, unknown> = {};
     if (typeof filter === "string") {
       query.genre = filter.toUpperCase();
     }
 
+  
     const sortOption: Record<string, 1 | -1> = {};
     sortOption[sortBy as string] = sort === "asc" ? 1 : -1;
 
+   
+    const limitNum = parseInt(limit as string, 10);
+    const pageNum = parseInt(page as string, 10);
+    const skip = (pageNum - 1) * limitNum;
+
+    
+    const totalBooks = await Book.countDocuments(query);
+
+
     const books = await Book.find(query)
       .sort(sortOption)
-      .limit(parseInt(limit as string, 10));
+      .skip(skip)
+      .limit(limitNum);
+
+   
+    const meta = {
+      totalBooks,
+      totalPages: Math.ceil(totalBooks / limitNum),
+      currentPage: pageNum,
+      limit: limitNum,
+      hasNextPage: pageNum * limitNum < totalBooks,
+      hasPrevPage: pageNum > 1
+    };
 
     res.status(200).json({
       success: true,
       message: "Books retrieved successfully",
+      meta,
       data: books,
     });
   } catch (error) {
     next(error);
   }
 });
-
 
 bookRouter.get(
   "/:id",
