@@ -9,8 +9,8 @@ export const app: Application = express();
 app.use(express.json());
 app.use(cors())
 
-app.use("/api/books", bookRouter);
-app.use("/api/borrow", borrowRouter);
+app.use("/api/v1", bookRouter);
+app.use("/api/v1", borrowRouter);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Library Management App server is Ready!");

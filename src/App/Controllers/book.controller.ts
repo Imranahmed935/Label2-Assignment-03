@@ -5,7 +5,7 @@ import { Book } from "../Models/book.model";
 export const bookRouter = express.Router();
 
 bookRouter.post(
-  "/",
+  "/books/create",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const bookData = req.body;
@@ -22,7 +22,7 @@ bookRouter.post(
 );
 
 
-bookRouter.get("/", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+bookRouter.get("/books", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const {
       filter,
@@ -78,7 +78,7 @@ bookRouter.get("/", async (req: Request, res: Response, next: NextFunction): Pro
 });
 
 bookRouter.get(
-  "/:id",
+  "/books/:id",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = req.params.id;
@@ -95,7 +95,7 @@ bookRouter.get(
 );
 
 bookRouter.put(
-  "/:id",
+  "/books/:id",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = req.params.id;
@@ -115,7 +115,7 @@ bookRouter.put(
 );
 
 bookRouter.delete(
-  "/:id",
+  "/books/:id",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = req.params.id;

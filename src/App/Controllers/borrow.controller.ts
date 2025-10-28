@@ -6,7 +6,7 @@ import { IBook } from "../Interfaces/book.interface";
 const borrowRouter = express.Router();
 
 borrowRouter.post(
-  "/",
+  "/borrow/create",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { book: bookId, quantity, dueDate } = req.body;
@@ -38,7 +38,7 @@ borrowRouter.post(
   }
 );
 
-borrowRouter.get("/", async (req: Request, res: Response, next: NextFunction) => {
+borrowRouter.get("/borrow", async (req: Request, res: Response, next: NextFunction) => {
   try {
     const summary = await Borrow.aggregate([
       {
